@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CayesDesk — Live Demo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@700;800&display=swap');
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #f8f9fa; color: #0d1117; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --bg-0: #f8f9fa;
+  --bg-1: #ffffff;
+  --bg-2: #f0f4f8;
+  --border: rgba(0,33,71,0.10);
+  --border-hi: rgba(0,33,71,0.22);
+  --glow: 0 2px 4px rgba(0,33,71,0.06), 0 8px 32px rgba(0,33,71,0.08);
+  --glow-accent: 0 0 0 1px rgba(0,33,71,0.10), 0 0 24px rgba(162,240,239,0.15);
+  --text-1: #0d1117;
+  --text-2: #4B5563;
+  --text-3: #9CA3AF;
+  --accent: #002147;
+  --accent-hi: #002f63;
+  --accent-dim: rgba(0,33,71,0.05);
+  --teal: #a2f0ef;
+  --teal-dim: rgba(162,240,239,0.20);
+}
+
+.wrap { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(248,249,250,0.96);
+  backdrop-filter: blur(20px) saturate(1.8);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+.nav-inner { max-width: 900px; margin: 0 auto; height: 58px; display: flex; align-items: center; justify-content: space-between; }
+.nav-links a { font-size: 13px; color: var(--text-2); text-decoration: none; margin-left: 24px; transition: color 0.15s; }
+.nav-links a:hover { color: var(--accent); }
+.btn-solid {
+  background: #002147; color: #ffffff;
+  font-size: 13px; font-weight: 700; padding: 8px 18px; border-radius: 8px; text-decoration: none;
+  box-shadow: 0 2px 12px rgba(0,33,71,0.20);
+  transition: all 0.15s;
+}
+.btn-solid:hover { background: #002f63; box-shadow: 0 4px 20px rgba(0,33,71,0.30); }
+
+.eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #002147; margin-bottom: 18px; }
+
+/* HERO */
+.hero { padding: 56px 0 48px; border-bottom: 1px solid var(--border); background: linear-gradient(160deg, #ffffff 60%, rgba(162,240,239,0.12) 100%); text-align: center; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #002147; background: rgba(0,33,71,0.06); border: 1px solid rgba(0,33,71,0.12); border-radius: 99px; padding: 4px 12px; margin-bottom: 20px; }
+.hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.6); }
+.hero h1 { font-family: 'Manrope', 'Inter', sans-serif; font-size: clamp(36px, 5.5vw, 62px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.06; color: #0d1117; margin-bottom: 16px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.hero h1 span { color: #002147; }
+.hero-sub { font-size: 16px; color: var(--text-2); line-height: 1.65; max-width: 520px; margin-bottom: 32px; margin-left: auto; margin-right: auto; }
+.hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.hero-link { font-size: 13px; color: var(--text-2); text-decoration: none; font-weight: 500; }
+.hero-link:hover { color: #002147; }
+.stats-strip { display: flex; gap: 0; margin-top: 40px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #ffffff; }
+.stat-item { flex: 1; padding: 16px 20px; border-right: 1px solid var(--border); }
+.stat-item:last-child { border-right: none; }
+.stat-num { font-family: 'Manrope', sans-serif; font-size: 22px; font-weight: 800; color: #002147; line-height: 1; }
+.stat-label { font-size: 11px; color: var(--text-3); margin-top: 4px; font-weight: 500; }
+@media (max-width: 600px) { .stats-strip { flex-wrap: wrap; } .stat-item { flex: 1 1 50%; } .stat-item:nth-child(2) { border-right: none; } }
+
+/* SECTIONS */
+.section { padding: 52px 0; border-bottom: 1px solid var(--border); }
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #002147; margin-bottom: 12px; }
+h2 { font-family: 'Manrope', 'Inter', sans-serif; font-size: clamp(22px, 3.5vw, 34px); font-weight: 800; letter-spacing: -0.8px; line-height: 1.13; color: #0d1117; }
+
+/* TABS */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 28px 0 24px; }
+.tab {
+  font-size: 15px; font-weight: 600; padding: 11px 26px;
+  border-radius: 99px; border: 1px solid var(--border);
+  background: #ffffff; color: var(--text-2); cursor: pointer;
+  transition: all 0.15s;
+}
+.tab:hover { color: #002147; border-color: var(--border-hi); }
+.tab.active { background: #002147; color: #ffffff; border-color: #002147; box-shadow: 0 2px 12px rgba(0,33,71,0.20); }
+
+/* PLAY BUTTON */
+.play-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 600; padding: 7px 18px;
+  border-radius: 99px; border: 1px solid var(--border);
+  background: #ffffff; color: #002147; cursor: pointer;
+  transition: all 0.15s; font-family: inherit;
+}
+.play-btn:hover:not(:disabled) { background: #002147; color: #ffffff; border-color: #002147; box-shadow: 0 2px 12px rgba(0,33,71,0.20); }
+.play-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.play-btn.playing { background: #002147; color: #ffffff; border-color: #002147; }
+
+/* DEMO GRID */
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 600px) { .demo-grid { grid-template-columns: 1fr; } }
+
+/* AUDIO PLAYER CARD */
+.audio-card {
+  background: linear-gradient(135deg, #002147 0%, #003070 100%);
+  border: 1.5px solid rgba(0,33,71,0.18);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 4px 8px 24px rgba(0,33,71,0.10);
+  padding: 28px 24px 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  position: relative;
+}
+.audio-card::before {
+  content:''; position:absolute; top:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background: radial-gradient(circle, rgba(162,240,239,0.15) 0%, transparent 70%);
+  pointer-events:none;
+}
+.audio-avatar { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid #a2f0ef; box-shadow: 0 0 0 4px rgba(162,240,239,0.2); flex-shrink:0; }
+.audio-avatar img { width:100%; height:100%; object-fit:cover; }
+.audio-info { text-align:center; }
+.audio-name { font-size: 16px; font-weight: 700; color: #ffffff; }
+.audio-desc { font-size: 12px; color: rgba(162,240,239,0.8); margin-top: 4px; }
+.audio-scenario { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 6px; }
+.audio-controls { display:flex; align-items:center; gap:14px; width:100%; }
+.play-circle {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink:0;
+  background: #a2f0ef; border: none; cursor: pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 20px; color: #002147;
+  box-shadow: 0 0 16px rgba(162,240,239,0.45);
+  transition: all 0.15s; font-family:inherit;
+}
+.play-circle:hover { background:#ffffff; transform:scale(1.06); }
+.audio-progress-wrap { flex:1; display:flex; flex-direction:column; gap:6px; }
+.audio-progress { width:100%; height:4px; border-radius:99px; background:rgba(255,255,255,0.15); cursor:pointer; appearance:none; -webkit-appearance:none; }
+.audio-progress::-webkit-slider-thumb { appearance:none; width:12px; height:12px; border-radius:50%; background:#a2f0ef; cursor:pointer; }
+.audio-progress::-webkit-slider-runnable-track { border-radius:99px; }
+.audio-time { display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,0.45); }
+
+/* HANDOFF PANEL */
+.handoff-panel {
+  background: var(--bg-1);
+  border: 1.5px solid rgba(0,33,71,0.18);
+  border-radius: 14px; overflow: hidden;
+  box-shadow: 4px 8px 24px rgba(0,33,71,0.10);
+}
+.handoff-top {
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg-2);
+}
+.handoff-title { font-size: 13px; font-weight: 600; color: #0d1117; }
+.htag {
+  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  border-radius: 99px; background: rgba(0,33,71,0.06);
+  color: var(--text-2); border: 1px solid var(--border);
+  letter-spacing: 0.06em;
+}
+.hbody { padding: 14px; max-height: 440px; overflow-y: auto; }
+.hbody::-webkit-scrollbar { width: 3px; }
+.hbody::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.h-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #002147; padding-bottom: 6px; border-bottom: 1px solid var(--border); margin: 12px 0 4px; }
+.action-row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.action-row:last-child { border-bottom: none; }
+.action-done { font-size: 10px; font-weight: 700; color: #16a34a; background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.2); border-radius: 99px; padding: 2px 8px; white-space: nowrap; margin-top: 2px; }
+.hrow { display: flex; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.hrow:last-child { border-bottom: none; }
+.hk { color: var(--text-2); min-width: 84px; font-weight: 500; }
+.hv { color: #0d1117; }
+.hempty { padding: 40px 14px; text-align: center; color: var(--text-3); font-size: 13px; }
+.live-reveal { animation: fadeSlideIn 0.35s ease both; }
+@keyframes fadeSlideIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.live-typing-row { display:flex; align-items:center; gap:8px; padding:8px 0; color:var(--text-3); font-size:12px; }
+.live-typing-row .dot { width:5px;height:5px;border-radius:50%;background:#002147;opacity:0.4;animation:tpulse 1.2s infinite; }
+.live-typing-row .dot:nth-child(2){animation-delay:0.2s;}
+.live-typing-row .dot:nth-child(3){animation-delay:0.4s;}
+@keyframes tpulse { 0%,100%{opacity:0.2;transform:scale(0.8);} 50%{opacity:1;transform:scale(1.1);} }
+
+/* HANS */
+.hans-layout { display: block; margin-top: 32px; }
+.hans-card {
+  background: #ffffff; border: 1px solid var(--border); border-radius: 16px;
+  padding: 24px; box-shadow: var(--glow);
+  display: flex; gap: 20px; align-items: center;
+}
+.hans-widget-side { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.hans-info { flex: 1; }
+.hans-name { font-size: 18px; font-weight: 700; color: #0d1117; }
+.hans-role { font-size: 11px; color: #002147; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; margin-top: 4px; }
+.hans-langs { font-size: 12px; color: var(--text-3); margin-top: 6px; }
+.hans-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #16a34a; background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.2); border-radius: 99px; padding: 3px 10px; margin-top: 10px; }
+.hans-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 5px rgba(74,222,128,0.6); }
+.hans-widget { margin-top: 18px; }
+@media (max-width: 500px) { .hans-card { flex-direction: column; text-align: center; } }
+.hans-cta-btn {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+  background: linear-gradient(135deg, #002147 0%, #003070 100%);
+  color: #ffffff; font-family: inherit; font-size: 14px; font-weight: 700;
+  padding: 12px 20px; border-radius: 12px; border: 1px solid rgba(162,240,239,0.25);
+  cursor: pointer; letter-spacing: 0.03em; text-decoration: none;
+  box-shadow: 4px 6px 16px rgba(0,33,71,0.25);
+  transition: all 0.15s;
+}
+.hans-cta-btn:hover { background: linear-gradient(135deg, #002f63 0%, #003d80 100%); transform: translateY(-1px); }
+.widget-wrap {
+  margin-top: 18px;
+  background: linear-gradient(135deg, #002147 0%, #003070 100%);
+  border-radius: 16px;
+  padding: 24px 22px 22px;
+  border: 3px solid #000000;
+  box-shadow: none;
+  position: relative;
+  overflow: hidden;
+}
+.widget-wrap elevenlabs-convai { transform: scale(1.15); transform-origin: center top; display: block; margin: 8px 0 12px; }
+.widget-wrap::before {
+  content: '';
+  position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(162,240,239,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.widget-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(162,240,239,0.8); margin-bottom: 12px; }
+.widget-prompt { font-size: 13px; color: rgba(255,255,255,0.65); margin-bottom: 14px; line-height: 1.5; }
+.hans-desc { font-size: 14px; color: var(--text-2); line-height: 1.65; margin-bottom: 20px; max-width: 600px; text-align: left; }
+.caps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+@media (max-width: 500px) { .caps-grid { grid-template-columns: 1fr; } }
+.cap-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;
+}
+.cap-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.cap-title { font-size: 12px; font-weight: 700; color: #0d1117; line-height: 1.3; }
+.cap-desc { font-size: 11.5px; color: var(--text-3); margin-top: 2px; line-height: 1.4; }
+
+/* WIDGET CARD */
+.widget-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: var(--glow-accent);
+}
+
+/* CTA */
+.cta { padding: 60px 0; text-align: center; border-bottom: 1px solid var(--border); }
+.cta h2 { margin-bottom: 10px; }
+.cta p { color: var(--text-2); font-size: 15px; margin-bottom: 28px; }
+.cta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn-cta {
+  background: #002147; color: #ffffff;
+  font-size: 15px; font-weight: 700; padding: 13px 28px; border-radius: 10px; text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0,33,71,0.25);
+  transition: all 0.15s;
+}
+.btn-cta:hover { background: #002f63; box-shadow: 0 4px 28px rgba(0,33,71,0.35); }
+.btn-outline {
+  background: #ffffff; color: var(--text-2);
+  font-size: 15px; font-weight: 600; padding: 13px 28px; border-radius: 10px;
+  border: 1px solid var(--border); text-decoration: none; transition: all 0.15s;
+}
+.btn-outline:hover { color: #002147; border-color: var(--border-hi); }
+.cta-fine { font-size: 12px; color: var(--text-3); margin-top: 18px; }
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .wrap { padding: 0 16px; }
+  nav { padding: 0 16px; }
+  .nav-inner { height: 52px; }
+  .nav-links { display: none; }
+  .hero { padding: 36px 0 32px; }
+  .hero h1 { font-size: clamp(30px, 8vw, 42px); letter-spacing: -0.8px; }
+  .hero-sub { font-size: 14px; }
+  .hero-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-actions a { text-align: center; }
+  .section { padding: 36px 0; }
+  .tabs { gap: 8px; }
+  .tab { font-size: 14px; padding: 10px 18px; flex: 1; text-align: center; }
+  .demo-grid { grid-template-columns: 1fr; }
+  .audio-card { padding: 20px 16px 18px; }
+  .hbody { max-height: 320px; }
+  .hans-layout { display: block; }
+  .caps-grid { grid-template-columns: 1fr; }
+  .hans-card { padding: 20px 16px; }
+  .cta { padding: 40px 0; }
+  .cta-row { flex-direction: column; align-items: stretch; }
+  .cta-row a { text-align: center; }
+  .btn-cta, .btn-outline { font-size: 15px; padding: 14px 20px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  h2 { font-size: clamp(20px, 6vw, 28px); }
+}
+
+
+/* FOOTER */
+footer { padding: 28px 24px; border-top: 1px solid var(--border); }
+.footer-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-links a { font-size: 13px; color: var(--text-2); text-decoration: none; transition: color 0.15s; }
+.footer-links a:hover { color: #002147; }
+.footer-copy { font-size: 12px; color: var(--text-3); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <svg width="140" height="32" viewBox="0 0 316 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(4,8)">
+        <path d="M 39 16 A 18 18 0 1 0 39 40" stroke="#A2F0EF" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 32 23 A 8 8 0 1 0 32 33" stroke="#2563EB" stroke-width="4.25" stroke-linecap="round"/>
+        <circle cx="34" cy="28" r="4.25" fill="#A2F0EF"/>
+      </g>
+      <text x="78" y="51" font-family="Inter,system-ui,sans-serif" font-size="43" letter-spacing="-1.6">
+        <tspan font-weight="700" fill="#002147">Cayes</tspan><tspan font-weight="300" fill="#0a8f8e">Desk</tspan>
+      </text>
+    </svg>
+    <a href="https://www.cayesdesk.com" target="_blank" class="btn-solid">Get Started →</a>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow"><span class="dot"></span> Live Demo — Real Agent</div>
+    <h1>Your clinic's patient concierge,<br><span>handling every call.</span></h1>
+    <p class="hero-sub">Hans answers patient questions, books consultations, sends confirmation emails, updates your CRM, and notifies staff — all in one call. Watch it happen below.</p>
+    <div class="hero-actions">
+      <a href="https://www.cayesdesk.com" target="_blank" class="btn-cta" style="font-size:16px;padding:15px 32px;">Get Started at cayesdesk.com</a>
+      <a href="#demo" class="hero-link" style="font-size:15px;">↓ See the demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="section" id="demo">
+  <div class="wrap">
+    <div class="section-label">Live Examples</div>
+    <h2>See how Hans coordinates each call type.</h2>
+    <div class="tabs">
+      <button class="tab active" onclick="load(0,this)">Implant Dentistry</button>
+      <button class="tab" onclick="load(1,this)">Med Spas</button>
+    </div>
+    <audio id="call-audio" preload="auto"></audio>
+    <div class="demo-grid">
+      <div class="audio-card">
+        <div class="audio-avatar"><img src="hans-avatar.png" alt="Hans"></div>
+        <div class="audio-info">
+          <div class="audio-name">Hans — CayesDesk</div>
+          <div class="audio-desc">Patient Concierge</div>
+          <div class="audio-scenario" id="audio-scenario">Implant Dentistry Call</div>
+        </div>
+        <div class="audio-controls">
+          <button class="play-circle" id="play-circle" onclick="togglePlay()">▶</button>
+          <div class="audio-progress-wrap">
+            <input type="range" class="audio-progress" id="audio-progress" value="0" min="0" max="100" step="0.1" oninput="seekAudio(this.value)">
+            <div class="audio-time"><span id="audio-cur">0:00</span><span id="audio-dur">0:00</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="handoff-panel">
+        <div class="handoff-top">
+          <div>
+            <div class="handoff-title">What your staff receives</div>
+            <div style="font-size:11px;color:var(--text-2);margin-top:2px;">Delivered to your CRM, email, or SMS the moment the call ends</div>
+          </div>
+          <div class="htag" id="htag">WAITING</div>
+        </div>
+        <div class="hbody" id="hbody">
+          <div class="hempty">
+            <div style="font-size:22px;margin-bottom:8px;">👆</div>
+            Watch the call on the left — the summary your team receives appears here automatically.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HANS -->
+<section class="section" id="hans">
+  <div class="wrap">
+    <div class="section-label">Live Agent</div>
+    <h2>Talk to the real concierge.</h2>
+    <div class="hans-layout">
+      <div>
+        <p class="hans-desc">This is the actual agent your clinic's patients would speak with — not a simulation. Ask Hans anything: procedure questions, pricing, availability, or what the 7-day pilot looks like.</p>
+        <div class="caps-grid">
+          <div class="cap-item"><div class="cap-icon">📅</div><div><div class="cap-title">Books appointments</div><div class="cap-desc">Syncs directly with your calendar — no back and forth</div></div></div>
+          <div class="cap-item"><div class="cap-icon">📧</div><div><div class="cap-title">Sends confirmation emails</div><div class="cap-desc">Patient gets address, what to bring, and a summary</div></div></div>
+          <div class="cap-item"><div class="cap-icon">📋</div><div><div class="cap-title">Updates your CRM</div><div class="cap-desc">Full intake notes logged instantly, no manual entry</div></div></div>
+          <div class="cap-item"><div class="cap-icon">💬</div><div><div class="cap-title">Notifies your staff</div><div class="cap-desc">SMS or email alert with hot lead details and flags</div></div></div>
+          <div class="cap-item"><div class="cap-icon">🩺</div><div><div class="cap-title">Answers questions</div><div class="cap-desc">Procedure info, recovery, pricing — trained on your services</div></div></div>
+          <div class="cap-item"><div class="cap-icon">🔒</div><div><div class="cap-title">HIPAA compliant</div><div class="cap-desc">BAA included day one, encrypted end-to-end</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="wrap">
+    <h2>Start the 7-day pilot for $497.</h2>
+    <p>Credited in full toward Month 1. Live on real calls within 3 business days.</p>
+    <div class="cta-row">
+      <a href="https://www.cayesdesk.com" target="_blank" class="btn-cta">Get Started at cayesdesk.com</a>
+      <a href="tel:+15613003697" class="btn-outline">Call +1 (561) 300-3697</a>
+    </div>
+    <p class="cta-fine">No setup fee · No overages · BAA day one · HIPAA compliant</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://www.cayesdesk.com" target="_blank">cayesdesk.com</a>
+      <a href="mailto:hello@cayesdesk.com">hello@cayesdesk.com</a>
+      <a href="tel:+15613003697">+1 (561) 300-3697</a>
+    </div>
+    <div class="footer-copy">© 2026 CayesDesk. HIPAA Compliant.</div>
+  </div>
+</footer>
+
+<script>
+const S = [
+  // ── 0: COSMETIC & IMPLANT DENTISTRY ──────────────────────────────────────
+  {
+    audio: 'call-implant.mp3',
+    msgs:[
+      {s:'caller',t:"Good morning. I saw your ad for full-arch dental implants — the All-on-4 procedure. Is that something your office does?"},
+      {s:'agent', t:"Good morning! Yes, it is. I'm Hans, the patient concierge. I'd love to get you set up with the right specialist — can I get your name?"},
+      {s:'caller',t:"Yes, it's Maria. Maria Hernandez."},
+      {s:'agent', t:"Great to meet you, Maria. Are you looking to replace a full arch on the top, bottom, or both? And have you had any implant consultations before?"},
+      {s:'caller',t:"Both arches. I had a consultation elsewhere about 2 years ago but never moved forward. I'm ready now. What's the difference between All-on-4 and All-on-6?"},
+      {s:'agent', t:"Great question — the doctor will walk you through both options in detail at your consultation and help you figure out which is the right fit. I'll make sure that's on the agenda."},
+      {s:'caller',t:"What if I don't have enough bone?"},
+      {s:'agent', t:"That's a great thing to bring up — I'll note that as a question for the doctor so they can address it directly at your consult."},
+      {s:'caller',t:"How long does the whole process take?"},
+      {s:'agent', t:"The doctor will give you a full personalized timeline at the consultation based on your specific situation. I'll flag that question so it's covered."},
+      {s:'caller',t:"What about pain — how bad is it?"},
+      {s:'agent', t:"The team will walk you through exactly what to expect at your visit. I'll note that as one of your questions so the doctor addresses it."},
+      {s:'caller',t:"I have a partial on the bottom. Upper teeth are mostly mine but in bad shape."},
+      {s:'agent', t:"Got it — I've noted that. What's the best phone number and email to reach you, Maria?"},
+      {s:'caller',t:"Phone is 954-555-0182 and email is maria.h@gmail.com."},
+      {s:'agent', t:"Perfect. Do you have any health conditions or medications the team should be aware of before your visit?"},
+      {s:'caller',t:"I take metformin for Type 2 diabetes."},
+      {s:'agent', t:"I'll make sure that's flagged in your intake notes so the doctor is prepared. Does insurance cover any of this?"},
+      {s:'caller',t:"I was wondering about that — and what's the cost range?"},
+      {s:'agent', t:"The treatment coordinator will go over pricing and any financing options with you at the consultation. I've noted both questions so they're ready for you."},
+      {s:'caller',t:"Perfect. Let's book it."},
+      {s:'agent', t:"I have Thursday at 10 AM or Friday at 2 PM with Dr. Reyes. Which works better?"},
+      {s:'caller',t:"Thursday at 10 works."},
+      {s:'agent', t:"Confirmed — Thursday at 10 AM with Dr. Reyes. You'll get a confirmation email at maria.h@gmail.com with the address and everything you need to bring. Is there anything else I can help with?"},
+      {s:'caller',t:"No, that covers everything. Thank you."},
+      {s:'agent', t:"My pleasure, Maria. We'll see you Thursday at 10. Take care!"},
+    ],
+    reveals: [
+      { after: 2, html: `<div class="h-section-label" style="margin-top:6px;">Contact Info</div><div id="r-contact-0"></div>` },
+      { after: 2, fn: 'addRow', target:'r-contact-0', icon:'👤', label:'Caller name', value:'Maria Hernandez' },
+      { after: 7, fn: 'addRow', target:'r-contact-0', icon:'📞', label:'Phone', value:'954-555-0182' },
+      { after: 7, fn: 'addRow', target:'r-contact-0', icon:'📧', label:'Email', value:'maria.h@gmail.com' },
+      { after: 10, html: `<div class="h-section-label" style="margin-top:14px;">Appointment</div><div id="r-appt-0"></div>` },
+      { after: 10, fn: 'addRow', target:'r-appt-0', icon:'📅', label:'Date & time', value:'Thursday, June 5 — 10:00 AM' },
+      { after: 10, fn: 'addRow', target:'r-appt-0', icon:'🩺', label:'Provider', value:'Dr. Reyes' },
+      { after: 10, fn: 'addRow', target:'r-appt-0', icon:'✅', label:'Calendar status', value:'✓ Added to Nexhealth calendar' },
+      { after: 15, html: `<div class="h-section-label" style="margin-top:14px;">Call Notes</div><div id="r-notes-0" style="font-size:12.5px;color:var(--text-2);line-height:1.7;padding:6px 0;"></div>` },
+      { after: 15, fn: 'addNote', target:'r-notes-0', text:'Type 2 diabetic (metformin) — A1C review needed, flagged for Dr. Reyes.' },
+      { after: 17, fn: 'addNote', target:'r-notes-0', text:'Asked about insurance/financing — treatment coordinator to cover at consult.' },
+      { after: 19, fn: 'addNote', target:'r-notes-0', text:'Both arches: lower partial, upper teeth in poor condition. Prior consult ~2 yrs ago.' },
+    ],
+    handoff: {
+      contact: {name:"Maria Hernandez", phone:"954-555-0182", email:"maria.h@gmail.com", language:"English"},
+      appt: {time:"Thursday, June 5 — 10:00 AM", provider:"Dr. Reyes", type:"Full-Arch Implant Consultation", location:"In-Office", booked:"✓ Added to Nexhealth calendar"},
+      notes: "Patient ready to move forward — prior consult ~2 yrs ago, did not proceed. Both arches: lower partial, upper teeth in poor condition. Type 2 diabetic (metformin) — A1C review needed, flagged for Dr. Reyes. Asked about insurance/financing — treatment coordinator to cover. Bring prior imaging if available.",
+      actions: [
+        {icon:"📅", label:"Appointment booked", detail:"Nexhealth calendar — Thursday 10 AM, Dr. Reyes"},
+        {icon:"📧", label:"Confirmation email sent", detail:"All-on-4/6 overview, address, what to bring"},
+        {icon:"📋", label:"Lead record created", detail:"CRM updated — diabetes history + insurance Q flagged"},
+        {icon:"💬", label:"Staff alert sent", detail:"Front desk notified — hot lead, diabetic patient, financing discussion needed"},
+      ]
+    }
+  },
+  // ── 1: MED SPA & AESTHETICS ──────────────────────────────────────────────
+  {
+    audio: 'call-medspa.mp3',
+    msgs:[
+      {s:'caller',t:"Hi, I'm calling about some treatments I've been looking into. I saw that your med spa does Botox, but I also wanted to ask about a few other things."},
+      {s:'agent', t:"Hi! Of course — I'm Hannah, the patient concierge. I'd love to help you figure out exactly what you're looking for. Can I get your name?"},
+      {s:'caller',t:"Sure, it's Jasmine. Jasmine Reyes."},
+      {s:'agent', t:"It's nice to meet you Jasmine. So, what kind of treatments did you want to look into?"},
+      {s:'caller',t:"OK so I've been wanting to do Botox for a while, mainly my forehead and the lines between my eyebrows. But I've also been looking at filler — I want more volume in my cheeks. And honestly I'm curious about a skin tightening treatment too because my jawline isn't as defined as it used to be."},
+      {s:'agent', t:"I love that you came in knowing what you want — that actually makes the consultation really efficient. So let's break this down. For the forehead and glabella — those are the 11 lines between the brows — Botox is exactly the right tool. Cheek volume is typically restored with a hyaluronic acid filler like Juvederm Voluma, which is specifically designed for that mid-face lift effect. For jawline definition and skin tightening, we have two strong options: Kybella if there's submental fat under the chin, or Sculptra and RF microneedling for collagen stimulation and skin laxity. Have you done any of these before?"},
+      {s:'caller',t:"I've done Botox once, about two years ago. I've never done filler or anything else."},
+      {s:'agent', t:"OK, that's good to know — so you're familiar with Botox but we'd treat the others as first-time consultations. For first-time filler patients our injectors always do a full facial assessment before treating. They map your anatomy and talk through the look you're going for. That's typically done the same visit as Botox if you're ready to proceed, or you can start with the consult and schedule the treatment separately. What works better for you?"},
+      {s:'caller',t:"I'd love to get it all done in one visit if possible. But I do have a question — I've heard filler can go wrong. Like migration or looking unnatural. How do you avoid that?"},
+      {s:'agent', t:"That's a really good question and it shows you've done your research. The most common cause of filler migration is technique and product selection. All of our injectors are nurse practitioners or physicians with advanced aesthetic training. They use cannulas rather than needles for cheek filler, which significantly reduces bruising. They also follow a less is more approach on first treatments — it's always easier to add than remove. And all our hyaluronic acid fillers are reversible with hyaluronidase if you ever want an adjustment. I'll make sure the clinician is aware of your concerns so they can discuss them in more detail during your consult."},
+      {s:'caller',t:"OK that actually makes me feel a lot better. So what about the skin tightening — you mentioned RF microneedling. What is that exactly?"},
+      {s:'agent', t:"RF microneedling — we use Morpheus8 — combines traditional microneedling with radiofrequency energy delivered directly into the dermis. The microneedles create controlled micro-injuries that trigger collagen production, and the RF heat tightens the deeper tissue simultaneously. It's one of the best non-surgical options for jawline contouring, skin laxity, and texture. Most patients do a series of 3 treatments spaced 4 to 6 weeks apart for optimal results. There's about 2 to 3 days of downtime — skin looks pink and slightly textured, similar to a mild sunburn. Results build over 3 months as collagen remodels."},
+      {s:'caller',t:"And how much does all of this cost roughly?"},
+      {s:'agent', t:"Exact pricing depends on the assessment and how many units or syringes are recommended. Botox runs about $13 per unit; forehead and glabella together typically use 30 to 50 units, so roughly $360 to $700. Juvederm Voluma for cheeks is typically 1 to 2 syringes per side at around $600 per syringe. Morpheus8 per session is around $900 to $1,200, and we do offer package pricing for the series of 3. The treatment coordinator will give you exact numbers and any current promotions at your appointment."},
+      {s:'caller',t:"That's really helpful. Is there anything I need to avoid before coming in?"},
+      {s:'agent', t:"Yes — for Botox and filler, avoid ibuprofen, aspirin, and other blood thinners for 48 hours before, and skip alcohol for 24 hours before. No topical retinols or acids for 48 hours. For Morpheus8, also avoid sun exposure for a week prior and come in with clean skin, no makeup. I'll include the full pre-treatment guide in your confirmation email so you have it all in writing."},
+      {s:'caller',t:"Perfect. One more thing — I'm actually on a low-dose birth control pill. Does that affect anything?"},
+      {s:'agent', t:"Low-dose hormonal birth control doesn't affect Botox or RF microneedling. For filler, some patients on hormonal contraceptives experience slightly more swelling post-treatment, but it's not a contraindication — just something the injector will note and monitor. I'll add that to your intake so they're aware going in."},
+      {s:'caller',t:"Great! What's your availability like?"},
+      {s:'agent', t:"I have a full-treatment appointment slot available this Friday at 2 PM or next Tuesday at 11 AM. Both are 90-minute blocks to allow enough time for the consultation, Botox, and filler. The Morpheus8 would be scheduled as a separate visit since it requires clean non-injected skin. Which day works for you?"},
+      {s:'caller',t:"Tuesday at 11 works perfectly."},
+      {s:'agent', t:"Locked in — Tuesday at 11 AM, 90-minute visit for Botox consult and treatment plus cheek filler assessment. Could I get your best email and a callback number, Jasmine?"},
+      {s:'caller',t:"Email is jasmine.reyes88@gmail.com and my number is 786-555-0214."},
+      {s:'agent', t:"Perfect. Confirmation is on its way to jasmine.reyes88@gmail.com with the pre-treatment instructions, office address, and a summary of everything we discussed. I've also noted your interest in Morpheus8 so the team can book a follow-up series consult at the same visit. Is there anything else before I let you go?"},
+      {s:'caller',t:"No, that's everything. Thank you so much, Hans."},
+      {s:'agent', t:"My pleasure, Jasmine. We'll see you Tuesday at 11. Take care!"},
+    ],
+    reveals: [
+      { after: 2, html: `<div class="h-section-label" style="margin-top:6px;">Contact Info</div><div id="r-contact-1"></div>` },
+      { after: 2, fn: 'addRow', target:'r-contact-1', icon:'👤', label:'Caller name', value:'Jasmine Reyes' },
+      { after: 3, html: `<div class="h-section-label" style="margin-top:14px;">Call Notes</div><div id="r-notes-1" style="font-size:12.5px;color:var(--text-2);line-height:1.7;padding:6px 0;"></div>` },
+      { after: 3, fn: 'addNote', target:'r-notes-1', text:'Interested in: forehead + glabella Botox, cheek volume (Voluma), Morpheus8 for jawline.' },
+      { after: 7, fn: 'addNote', target:'r-notes-1', text:'Botox-experienced (~2 yrs ago). First-time filler patient.' },
+      { after: 8, fn: 'addNote', target:'r-notes-1', text:'Expressed concern about filler migration — injector to address at consult.' },
+      { after: 15, fn: 'addNote', target:'r-notes-1', text:'On low-dose hormonal birth control — flagged for injector (minor swelling risk).' },
+      { after: 18, html: `<div class="h-section-label" style="margin-top:14px;">Appointment</div><div id="r-appt-1"></div>` },
+      { after: 18, fn: 'addRow', target:'r-appt-1', icon:'📅', label:'Date & time', value:'Tuesday — 11:00 AM' },
+      { after: 18, fn: 'addRow', target:'r-appt-1', icon:'🩺', label:'Visit type', value:'Botox + Voluma Consult (90 min)' },
+      { after: 18, fn: 'addRow', target:'r-appt-1', icon:'✅', label:'Calendar status', value:'✓ Added to Aesthetic suite calendar' },
+      { after: 21, fn: 'addRow', target:'r-contact-1', icon:'📞', label:'Phone', value:'786-555-0214' },
+      { after: 21, fn: 'addRow', target:'r-contact-1', icon:'📧', label:'Email', value:'jasmine.reyes88@gmail.com' },
+    ],
+    handoff: {
+      contact: {name:"Jasmine Reyes", phone:"786-555-0214", email:"jasmine.reyes88@gmail.com", language:"English"},
+      appt: {time:"Tuesday — 11:00 AM", provider:"Injector Consult + Treatment", type:"Botox (Forehead + Glabella) + Juvederm Voluma Consult (90 min)", location:"In-Office", booked:"✓ Added to Aesthetic suite calendar"},
+      notes: "First-time filler patient, Botox-experienced (last treatment ~2 yrs ago). Interested in: forehead + glabella Botox, cheek volume (Voluma), and Morpheus8 for jawline/skin tightening. Expressed concern about filler migration — injector to address at consult. On low-dose hormonal birth control — flagged for injector (minor swelling risk). Morpheus8 series consult to be scheduled at same visit.",
+      actions: [
+        {icon:"📅", label:"Appointment booked", detail:"Tuesday 11 AM — 90-min Botox + Voluma consult (Nextech)"},
+        {icon:"📧", label:"Confirmation + pre-care guide sent", detail:"Pre-treatment instructions for Botox, filler & Morpheus8"},
+        {icon:"📋", label:"Lead record created", detail:"CRM: Botox + Voluma + Morpheus8 interest, BC flagged, filler concerns noted"},
+        {icon:"💬", label:"Injector notified", detail:"First-time filler — address migration concerns, note hormonal BC"},
+      ]
+    }
+  },
+];
+
+let running=false, tid=null, currentIdx=0;
+
+const scenarioLabels = ['Implant Dentistry Call', 'Med Spa Call'];
+
+function fmtTime(s) {
+  const m = Math.floor(s/60); return m+':'+(Math.floor(s%60)+'').padStart(2,'0');
+}
+
+function autoPlayAudio(idx) {
+  const audio = document.getElementById('call-audio');
+  audio.pause(); audio.currentTime = 0;
+  document.getElementById('audio-scenario').textContent = scenarioLabels[idx] || '';
+  document.getElementById('play-circle').textContent = '▶';
+  document.getElementById('audio-progress').value = 0;
+  document.getElementById('audio-cur').textContent = '0:00';
+  document.getElementById('audio-dur').textContent = '0:00';
+  if (S[idx].audio) {
+    audio.src = S[idx].audio;
+    audio.play().catch(()=>{});
+    document.getElementById('play-circle').textContent = '⏸';
+  }
+}
+
+function togglePlay() {
+  const audio = document.getElementById('call-audio');
+  const btn = document.getElementById('play-circle');
+  if (audio.paused) { audio.play(); btn.textContent = '⏸'; }
+  else { audio.pause(); btn.textContent = '▶'; }
+}
+
+function seekAudio(val) {
+  const audio = document.getElementById('call-audio');
+  if (audio.duration) audio.currentTime = (val/100) * audio.duration;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const audio = document.getElementById('call-audio');
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    document.getElementById('audio-progress').value = (audio.currentTime / audio.duration) * 100;
+    document.getElementById('audio-cur').textContent = fmtTime(audio.currentTime);
+  });
+  audio.addEventListener('loadedmetadata', () => {
+    document.getElementById('audio-dur').textContent = fmtTime(audio.duration);
+  });
+  audio.addEventListener('ended', () => {
+    document.getElementById('play-circle').textContent = '▶';
+    document.getElementById('audio-progress').value = 0;
+    document.getElementById('audio-cur').textContent = '0:00';
+  });
+});
+
+function load(idx, btn) {
+  if(running){ clearTimeout(tid); running=false; }
+  const audio = document.getElementById('call-audio');
+  audio.pause(); audio.currentTime = 0;
+  currentIdx = idx;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const hb=document.getElementById('hbody');
+  const ht=document.getElementById('htag');
+  hb.innerHTML='<div class="live-typing-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:2px;">Listening to call...</span></div>';
+  ht.textContent='LIVE';
+  ht.style.cssText='background:rgba(74,222,128,0.10);color:#16a34a;border-color:rgba(74,222,128,0.25);';
+  autoPlayAudio(idx);
+  running=true;
+  revealAll(S[idx].reveals||[], S[idx].handoff, hb, ht);
+}
+
+function revealAt(reveals, i, hb) {
+  reveals.filter(r=>r.after===i).forEach(r=>{
+    if(r.html) {
+      const wrap = document.createElement('div');
+      wrap.className = 'live-reveal';
+      wrap.innerHTML = r.html;
+      hb.appendChild(wrap);
+      hb.scrollTop = hb.scrollHeight;
+    } else if(r.fn==='addRow') {
+      const el = document.getElementById(r.target);
+      if(!el) return;
+      const row = document.createElement('div');
+      row.className = 'hrow live-reveal';
+      row.innerHTML = `<div style="min-width:26px;font-size:15px;line-height:1.4;">${r.icon}</div><div style="flex:1;"><div style="font-size:10px;font-weight:700;letter-spacing:0.07em;color:var(--text-3);text-transform:uppercase;margin-bottom:2px;">${r.label}</div><div style="font-size:13px;color:var(--text-1);font-weight:500;line-height:1.45;">${r.value}</div></div>`;
+      el.appendChild(row);
+      hb.scrollTop = hb.scrollHeight;
+    } else if(r.fn==='addNote') {
+      const el = document.getElementById(r.target);
+      if(!el) return;
+      const line = document.createElement('div');
+      line.className = 'live-reveal';
+      line.style.cssText = 'display:flex;align-items:baseline;gap:6px;margin-bottom:3px;';
+      line.innerHTML = `<span style="color:#002147;font-size:11px;margin-top:1px;flex-shrink:0;">▸</span><span>${r.text}</span>`;
+      el.appendChild(line);
+      hb.scrollTop = hb.scrollHeight;
+    }
+  });
+}
+
+function revealAll(reveals, handoff, hb, ht) {
+  // spread reveals evenly across estimated call duration (use audio duration when known)
+  const audio = document.getElementById('call-audio');
+  const total = reveals.length;
+  reveals.forEach((r, i) => {
+    const delay = (i + 1) * (12000 / (total + 1));
+    tid = setTimeout(() => revealAt(reveals, r.after, hb), delay);
+  });
+  // fire finish after all reveals
+  const finishDelay = 12500;
+  setTimeout(() => { finish(handoff, hb, ht); running = false; }, finishDelay);
+  // if audio is loaded, reschedule based on actual duration
+  audio.addEventListener('loadedmetadata', () => {
+    if (!running) return;
+    reveals.forEach((r, i) => {
+      const delay = (i + 1) * ((audio.duration * 1000) / (total + 1));
+      tid = setTimeout(() => revealAt(reveals, r.after, hb), delay);
+    });
+    setTimeout(() => { finish(handoff, hb, ht); running = false; }, (audio.duration * 1000) + 500);
+  }, { once: true });
+}
+
+function finish(h, hb, ht) {
+  ht.textContent = 'SENT TO STAFF';
+  ht.style.cssText = 'background:rgba(0,33,71,0.08);color:#002147;border-color:rgba(0,33,71,0.22);';
+
+  const actionRows = h.actions.map(a =>
+    `<div class="action-row live-reveal">
+      <div style="font-size:16px;line-height:1.3;">${a.icon}</div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:600;color:var(--text-1);">${a.label}</div>
+        <div style="font-size:11.5px;color:var(--text-2);margin-top:1px;">${a.detail}</div>
+      </div>
+      <div class="action-done">DONE</div>
+    </div>`
+  ).join('');
+
+  const actionsWrap = document.createElement('div');
+  actionsWrap.className = 'live-reveal';
+  actionsWrap.innerHTML = `<div class="h-section-label" style="margin-top:14px;">Actions Taken</div>${actionRows}`;
+  hb.appendChild(actionsWrap);
+  hb.scrollTop = hb.scrollHeight;
+}
+
+
+window.addEventListener('load',()=>{
+  load(0,document.querySelector('.tab.active'));
+  autoPlayAudio(0);
+});
+</script>
+</body>
+</html>
